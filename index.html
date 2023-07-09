@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=PT+Sans&display=swap" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-9ndCyUaIbzAi2FUVXJi0CjmCapSmO7SnpJef0486qhLnuZ2cdeRhO02iuK6FUUVM" crossorigin="anonymous">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css">
+    <link rel="stylesheet" href="./styles.css">
+    <title>PlainStore</title>
+</head>
+<body>
+  <div class="container-fluid justify-content-center contenedorTodo">
+    <div>
+      <nav class="navbar navbar-expand-lg">
+        <div class="container-fluid">
+          <a class="navbar-brand text-light pt-0" href="./" id="brandName">
+            <img class="bg-light" src="https://img.freepik.com/vector-premium/concepto-logotipo-tienda-online-simple_257056-364.jpg" alt="" class="d-inline-block align-text-top" id="brandLogo">
+            PlainStore
+          </a>
+          <div class="collapse navbar-collapse" id="navbarSupportedContent">
+            <ul class="navbar-nav me-auto mb-2 mb-lg-0 pt-2">
+              <li class="nav-item ms-3">
+                <a class="nav-link active" aria-current="page" href="./">Home</a>
+              </li>
+              <a href="./shop-cart.html">
+                <li class="d-flex nav-item navbar-shopping-cart" id="productosEnCarrito">
+                  <i class="bi bi-cart-fill ms-2 mt-2">Carrito</i>
+                </li>
+              </a>
+            </ul>
+            <form class="d-flex">
+              <input class="form-control me-2" type="search" placeholder="Nombre de producto" aria-label="Search" id="buscador">
+              <button class="btn btn-outline-light" type="submit" id="botonBuscar">Buscar</button>
+            </form>
+          </div>
+        </div>
+      </nav>
+    </div>
+
+    <div id="contenedor">
+      <div class="d-flex" id="tituloLista">
+        <h3 class="mt-2 ms-3">Lista de Productos</h3>
+        <div class="d-flex mt-1 ms-4 selectCat" id="selectorCategoria">
+          <button id="Accesorios">Accesorios</button>
+          <button id="Audio">Audio</button>
+          <button id="Audiovisual">Audiovisual</button>
+          <button id="Computadoras">Computadoras</button>
+          <button id="Electrónica">Electrónica</button>
+          <button id="Fotografías">Fotografías</button>
+          <button id="Videojuegos">Videojuegos</button>
+          <button id="Wearables">Wearables</button>
+          <button id="Todos">Todos</button>
+        </div>
+      </div>
+      
+      <div class="justify-content-center" id="contenedorProductos">
+      </div>
+      
+    </div>
+  </div>
+      
+  <script src="./main.js"></script>
+</body>
+</html>
