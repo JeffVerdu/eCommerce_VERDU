@@ -1,3 +1,4 @@
+//Arreglo con productos para prueba
 let productos = [
     { id: 1, nombre: "smartphone", precio: 299.99, categoria: "Electrónica", stock: 0, imagen:"https://www.muycomputer.com/wp-content/uploads/2022/05/smartphones.jpg" },
     { id: 2, nombre: "tablet", precio: 199.99, categoria: "Electrónica", stock: 10, imagen:"https://home.ripley.cl/store/Attachment/WOP/D113/2000383682167/2000383682167_2.jpg" },
@@ -21,10 +22,11 @@ let productos = [
     { id: 20, nombre: "cargador portátil", precio: 29.99, categoria: "Accesorios", stock: 10, imagen:"https://catalogo.movistar.cl/pub/media/wysiwyg/caracteristica_equipo/gyrux_pbwhite_2.jpg" }
   ]
 
+//Arreglo para almacenar productos de carrito
 let carrito = []
 
+//Función para renderizar todos los productos
 function mostrarProductos(arrayProductos) {
-
   let contenedorProductos = document.getElementById("contenedorProductos")
   contenedorProductos.innerHTML = ''
   contenedorProductos.classList.add("m-3")
@@ -32,7 +34,6 @@ function mostrarProductos(arrayProductos) {
   divRow.classList.add("row", "container-fluid", "row-cols-3", "row-cols-md-5", "row-cols-lg-6", "g-1", "justify-content-center")
     
   arrayProductos.forEach((producto) => {
-  
       nombre = producto.nombre.charAt(0).toUpperCase() + producto.nombre.slice(1)
       let divCard = document.createElement("div")
       divCard.classList.add("mb-1", "justify-content-center")
@@ -43,7 +44,6 @@ function mostrarProductos(arrayProductos) {
       divCardBody.style.height = "100%"
   
       if (producto.stock < 10 && producto.stock > 0) {
-    
         divCardBody.innerHTML = `
         <img src="${producto.imagen}" class="card-img-top" style="width: 100%; height: 100%; object-fit: contain;" alt="">
         <div class="card-body">
@@ -54,12 +54,11 @@ function mostrarProductos(arrayProductos) {
           <button class="btn" id=${producto.id}>Agregar al carrito</button>
         </div>
       `
-  
+
       divCard.appendChild(divCardBody)
       divRow.appendChild(divCard)
 
       } else if (producto.stock >= 10) {
-        
         divCardBody.innerHTML = `
         <img src="${producto.imagen}" class="card-img-top" style="width: 100%; height: 100%; object-fit: contain;" alt="">
         <div class="card-body">
@@ -75,7 +74,6 @@ function mostrarProductos(arrayProductos) {
 
       }
       else {
-
         divCardBody.innerHTML = `
         <img src="${producto.imagen}" class="card-img-top" style="width: 100%; height: 100%; object-fit: contain;" alt="">
         <div class="card-body">
@@ -88,12 +86,13 @@ function mostrarProductos(arrayProductos) {
   
       divCard.appendChild(divCardBody)
       divRow.appendChild(divCard)
-
       }
+
       contenedorProductos.appendChild(divRow)
       let botonAgregarCarrito = document.getElementById(producto.id)
       botonAgregarCarrito.addEventListener("click", (event) => agregarAlCarrito(event.target.id))
     })
+
     if (carrito.length > 0) {
       let productosEnCarrito = document.getElementById("productosEnCarrito")
       let div = document.createElement("div")
@@ -102,10 +101,9 @@ function mostrarProductos(arrayProductos) {
       }
 }
 
+//Función para filtrar por dato ingresado por el usuario en input
 function filtrarBuscadorInput(arrayProductos, busqueda) {
-
   busqueda = busqueda.toLowerCase()
-
   let productosFiltrados = []
   productosFiltrados = arrayProductos.filter((producto) => producto.nombre.toLowerCase().includes(busqueda))
 
@@ -120,21 +118,17 @@ function filtrarBuscadorInput(arrayProductos, busqueda) {
   }
 }
 
+//Función para filtrar por selector de categorias
 function filtrarBotonCategoria(arrayProdutos, categoria) {
-  
     let productosFiltrados = arrayProdutos.filter((producto) => producto.categoria.toLowerCase() == categoria.toLowerCase())
     mostrarProductos(productosFiltrados)
 }
 
 function agregarAlCarrito(id){
-
   id = parseInt(id)
-
   let pos = productos.findIndex(producto => producto.id === id)
   let producto = productos.find(producto => producto.id === id)
-
   productos[pos].stock -= 1
-
   let carritoIndex = carrito.findIndex(item => item.id === id)
 
   if (carritoIndex !== (-1)) {
@@ -158,11 +152,10 @@ function agregarAlCarrito(id){
   mostrarProductos(productos)
 }
 
+//Función para obtener datos almacenados en Local Storage
 function obtenerLocalStorage(){
-  
   let carritoStorage = JSON.parse(localStorage.getItem("carrito"))
   let productosStorage = JSON.parse(localStorage.getItem("productos"))
-
   if (carritoStorage) {
     carrito = carritoStorage
   }
@@ -171,16 +164,18 @@ function obtenerLocalStorage(){
   }
 }
 
+//Llamadas a funciones
 obtenerLocalStorage()
 mostrarProductos(productos)
 
+//Variable para capturar evento click del botón para buscar un producto por nombre
 let buscador = document.getElementById("buscador")
 let botonBuscar = document.getElementById("botonBuscar")
-
 botonBuscar.addEventListener("click", (event) => {
   event.preventDefault()
   filtrarBuscadorInput(productos, buscador.value)})
 
+//Variables para capturar evento click de los botones de selección de categorias 
 let botonElectronica = document.getElementById("Electrónica")
 let botonAccesorios = document.getElementById("Accesorios")
 let botonComputadoras = document.getElementById("Computadoras")
@@ -190,7 +185,6 @@ let botonVideojuegos = document.getElementById("Videojuegos")
 let botonWearables = document.getElementById("Wearables")
 let botonAudiovisual = document.getElementById("Audiovisual")
 let botonTodos = document.getElementById("Todos")
-
 botonElectronica.addEventListener("click", () => filtrarBotonCategoria(productos, "Electrónica"))
 botonAccesorios.addEventListener("click", () => filtrarBotonCategoria(productos, "Accesorios"))
 botonComputadoras.addEventListener("click", () => filtrarBotonCategoria(productos, "Computadoras"))

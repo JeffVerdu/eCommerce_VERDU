@@ -1,15 +1,16 @@
 
+//Recuperación de información en LocalStorage
 if (JSON.parse(localStorage.getItem('carrito'))){
     carrito = JSON.parse(localStorage.getItem('carrito'))
 }
 else{
     carrito = []
 }
+productos = JSON.parse(localStorage.getItem('productos')) 
 
-productos = JSON.parse(localStorage.getItem('productos'))
-    
 let total = 0
 
+//Función para renderizar los productos agregados al carrito
 function mostrarCarrito (arrayCarrito){
     if (arrayCarrito.length === 0) {
         let contenedorCarrito = document.getElementById("contenedorCarrito")
@@ -24,16 +25,13 @@ function mostrarCarrito (arrayCarrito){
         divRow.classList.add("row", "container-fluid", "row-cols-3", "row-cols-md-5", "row-cols-lg-6", "g-1", "justify-content-center")
     
         arrayCarrito.forEach((producto) => {
-    
             nombre = producto.nombre.charAt(0).toUpperCase() + producto.nombre.slice(1)
             let divCard = document.createElement("div")
             divCard.classList.add("mb-1", "justify-content-center")
-        
             let divCardBody = document.createElement("div")
             divCardBody.classList.add("card", "p-1")
             divCardBody.style.width = "100%"
             divCardBody.style.height = "100%"
-    
             divCardBody.innerHTML = `
             <img src="${producto.imagen}" class="card-img-top" style="width: 100%; height: 100%; object-fit: contain;" alt="">
             <div class="card-body">
@@ -51,15 +49,14 @@ function mostrarCarrito (arrayCarrito){
         let botonEliminar = document.getElementById(producto.id)
         botonEliminar.addEventListener("click", (event) => {eliminarDelCarrito(event.target.id)})
         })
-        
         let productosEnCarrito = document.getElementById("productosEnCarrito")
         let div = document.createElement("div")
         div.textContent = carrito.length
-        productosEnCarrito.appendChild(div)
-            
+        productosEnCarrito.appendChild(div)     
     }
 }
 
+//Función para eliminar producto seleccionado del carrito
 function eliminarDelCarrito(id) {
     let productoAEliminar = productos.find(producto => producto.id == id)
     let indexProductos = productos.indexOf(productoAEliminar)
@@ -77,6 +74,7 @@ function eliminarDelCarrito(id) {
     }
 }
 
+//Función para eliminar todos los productos del carrito
 function vaciarCarrito() {
     carrito = []
     total = 0
@@ -85,12 +83,14 @@ function vaciarCarrito() {
     location.reload()
 }
 
+//Función para calcular el total a pagar por los productos agregados al carrito
 function calcularTotal() {
     total = 0
     carrito.forEach(producto => total += producto.precio)
     return total
 }
 
+//Función para mostrar el Total a pagar y los botones de confirmar compra o vaciar carrito
 function renderizarTotal() {
     let totalizarCompra = document.getElementById("totalizarCompra")
     totalizarCompra.innerHTML = ''
@@ -122,8 +122,10 @@ function renderizarTotal() {
     })
 }
 
+//Llamada a función
 mostrarCarrito(carrito)
 
+//Condición para renderizar el contenedor de totalización de compra
 if (carrito.length > 0){
     renderizarTotal()
 }
