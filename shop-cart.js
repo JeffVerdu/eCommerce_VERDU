@@ -66,6 +66,8 @@ function eliminarDelCarrito(id) {
     localStorage.setItem('productos', JSON.stringify(productos))
     if (carrito.length <= 0){
         carrito = []
+        localStorage.removeItem('carrito')
+        localStorage.removeItem('productos')
         location.reload()
     }
     else{
