@@ -58,29 +58,131 @@ function mostrarCarrito (arrayCarrito){
 
 //Función para eliminar producto seleccionado del carrito
 function eliminarDelCarrito(id) {
+
     let productoAEliminar = productos.find(producto => producto.id == id)
     let indexProductos = productos.indexOf(productoAEliminar)
-    carrito = carrito.filter(producto => producto.id != id)
-    productos[indexProductos].stock += 1
-    localStorage.setItem('carrito', JSON.stringify(carrito))
-    localStorage.setItem('productos', JSON.stringify(productos))
-    if (carrito.length <= 0){
-        carrito = []
-        location.reload()
-    }
-    else{
-        mostrarCarrito(carrito)
-        renderizarTotal()
-    }
+
+    const swalWithBootstrapButtons = Swal.mixin({
+        customClass: {
+          confirmButton: 'btn btn-success',
+          cancelButton: 'btn btn-danger'
+        },
+        buttonsStyling: false
+      })
+      
+      swalWithBootstrapButtons.fire({
+        title: `¿Está seguro?`,
+        text: `¿Desea eliminar ${productoAEliminar.nombre} del carrito?`,
+        icon: 'warning',
+        showCancelButton: true,
+        confirmButtonText: 'Sí, eliminar!',
+        cancelButtonText: 'No, cancelar!',
+        focusConfirm: false,
+        reverseButtons: true
+      }).then((result) => {
+        if (result.isConfirmed) {
+
+            carrito = carrito.filter(producto => producto.id != id)
+            productos[indexProductos].stock += 1
+            localStorage.setItem('carrito', JSON.stringify(carrito))
+            localStorage.setItem('productos', JSON.stringify(productos))
+            if (carrito.length <= 0){
+                carrito = []
+                swalWithBootstrapButtons.fire(
+                    'Eliminado!',
+                    'Vaciaste el carrito',
+                    'success'
+                ).then((result) => {
+                    location.reload()
+                })
+            }
+            else{
+                swalWithBootstrapButtons.fire(
+                    'Eliminado!',
+                    `Se eliminó ${productoAEliminar.nombre} del carrito`,
+                    'success'
+                )
+                mostrarCarrito(carrito)
+                renderizarTotal()
+            }
+
+        } else if ( result.dismiss === Swal.DismissReason.cancel) {
+            mostrarCarrito(carrito)
+            renderizarTotal()
+        }
+      })
 }
 
 //Función para eliminar todos los productos del carrito
 function vaciarCarrito() {
-    carrito = []
-    total = 0
-    localStorage.removeItem('carrito')
-    localStorage.removeItem('productos')
-    location.reload()
+
+    const swalWithBootstrapButtons = Swal.mixin({
+      customClass: {
+        confirmButton: 'btn btn-success',
+        cancelButton: 'btn btn-danger'
+      },
+      buttonsStyling: false
+    })
+    
+    swalWithBootstrapButtons.fire({
+      title: '¿Está seguro?',
+      text: "¿Seguro que desea vaciar el carrito?",
+      icon: 'warning',
+      showCancelButton: true,
+      confirmButtonText: 'Sí, vaciar!',
+      cancelButtonText: 'No, cancelar!',
+      reverseButtons: true,
+      focusConfirm: false
+    }).then((result) => {
+      if (result.isConfirmed) {
+        swalWithBootstrapButtons.fire(
+          '¡Carrito vacio!',
+          'Vaciaste el carrito de compras',
+          'success'
+        ).then(() => {
+          carrito = []
+          total = 0
+          localStorage.removeItem('carrito')
+          localStorage.removeItem('productos')
+          location.reload()
+        })
+      } else if ( result.dismiss === Swal.DismissReason.cancel ) {
+      }
+    })
+}
+
+function confirmarCompra (){
+    const swalWithBootstrapButtons = Swal.mixin({
+        customClass: {
+          confirmButton: 'btn btn-success',
+          cancelButton: 'btn btn-danger'
+        },
+        buttonsStyling: false
+      })
+      
+      swalWithBootstrapButtons.fire({
+        title: '¿Desea completar su compra?',
+        text: `El total a pagar es de $${calcularTotal()}`,
+        icon: 'warning',
+        showCancelButton: true,
+        confirmButtonText: 'Sí, confirmar!',
+        cancelButtonText: 'Seguir comprando!',
+        reverseButtons: true
+      }).then((result) => {
+        if (result.isConfirmed) {
+          swalWithBootstrapButtons.fire(
+            '¡Compra Exitosa!',
+            'Gracias por su compra',
+            'success'
+          ).then((result) => {
+            carrito = []
+            total = 0
+            localStorage.removeItem('carrito')
+            localStorage.removeItem('productos')
+            location.reload()
+          })
+        }
+      })
 }
 
 //Función para calcular el total a pagar por los productos agregados al carrito
@@ -116,16 +218,11 @@ function renderizarTotal() {
         vaciarCarrito()
     })
     let botonConfirmar = document.getElementById("botonConfirmar")
-    botonConfirmar.addEventListener("click", () => {
-        alert("Gracias por su compra")
-        vaciarCarrito()
-    })
+    botonConfirmar.addEventListener("click", confirmarCompra)
 }
 
-//Llamada a función
+//Llamada a función para mostrar los productos agregados al carrito
 mostrarCarrito(carrito)
 
-//Condición para renderizar el contenedor de totalización de compra
-if (carrito.length > 0){
-    renderizarTotal()
-}
+//Operador AND para renderizar el contenedor de totalización de compra en caso de que haya productos en el carrito
+carrito.length > 0 && renderizarTotal()

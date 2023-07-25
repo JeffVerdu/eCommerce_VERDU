@@ -1,29 +1,32 @@
+
 //Arreglo con productos para prueba
-let productos = [
-    { id: 1, nombre: "smartphone", precio: 299.99, categoria: "Electrónica", stock: 0, imagen:"https://www.muycomputer.com/wp-content/uploads/2022/05/smartphones.jpg" },
-    { id: 2, nombre: "tablet", precio: 199.99, categoria: "Electrónica", stock: 10, imagen:"https://home.ripley.cl/store/Attachment/WOP/D113/2000383682167/2000383682167_2.jpg" },
-    { id: 3, nombre: "smart tv", precio: 599.99, categoria: "Electrónica", stock: 5, imagen:"https://home.ripley.cl/store/Attachment/WOP/D171/2000390574134/2000390574134-1.jpg" },
-    { id: 4, nombre: "auriculares", precio: 79.99, categoria: "Accesorios", stock: 20, imagen:"https://home.ripley.cl/store/Attachment/WOP/D347/2000392841821/2000392841821_2.jpg" },
-    { id: 5, nombre: "mouse", precio: 19.99, categoria: "Accesorios", stock: 30, imagen:"https://cdn2.spider.cl/20243-large_default/mouse-inalambrico-trust-ozaa-bateria-recargable-6-botones-2400dpi-azul.jpg" },
-    { id: 6, nombre: "teclado", precio: 39.99, categoria: "Accesorios", stock: 25, imagen:"https://cdnx.jumpseller.com/prismo-store/image/25984537/k3_iso_spanish_2.jpg?1682568900" },
-    { id: 7, nombre: "laptop", precio: 899.99, categoria: "Computadoras", stock: 12, imagen:"https://consumer.huawei.com/content/dam/huawei-cbg-site/latam/mx/mkt/plp/laptops/d14-amd-2021.jpg" },
-    { id: 8, nombre: "monitor", precio: 249.99, categoria: "Computadoras", stock: 18, imagen:"https://www.pcfactory.cl/public/foto/46125/2_1000.jpg?t=1664886183321" },
-    { id: 9, nombre: "impresora", precio: 149.99, categoria: "Computadoras", stock: 8, imagen:"https://storage.googleapis.com/designtec-storage/impresora-multifuncional-epson-ecotank-l4260-4599.jpg" },
-    { id: 10, nombre: "camara", precio: 299.99, categoria: "Fotografía", stock: 6, imagen:"https://home.ripley.cl/store/Attachment/WOP/D126/2000385326335/2000385326335_2.jpg" },
-    { id: 11, nombre: "dron", precio: 499.99, categoria: "Fotografía", stock: 4, imagen:"https://s3.amazonaws.com/imagenes-sellers-mercado-ripley/2021/10/22000621/IMAGEN-1-MICRO-DBLANCO-MICRO-DRON-CON-CAMARA-HD-PLAN-DE-VUELO-GIRO-360o-RECARGABLE-8X9-CM-BLANCO1.jpg" },
-    { id: 12, nombre: "altavoz", precio: 129.99, categoria: "Audio", stock: 15, imagen:"https://home.ripley.cl/store/Attachment/WOP/D103/2000384694374/2000384694374_2.jpg" },
-    { id: 13, nombre: "reproductor de musica", precio: 49.99, categoria: "Audio", stock: 20, imagen:"https://home.ripley.cl/store/Attachment/WOP/D347/2000316208389/2000316208389_2.jpg" },
-    { id: 14, nombre: "consola de videojuegos", precio: 399.99, categoria: "Videojuegos", stock: 7, imagen:"https://home.ripley.cl/store/Attachment/WOP/D172/2000380458314/2000380458314-2.jpg" },
-    { id: 15, nombre: "controlador de videojuegos", precio: 59.99, categoria: "Videojuegos", stock: 25, imagen:"https://home.ripley.cl/store/Attachment/WOP/D172/2000395344565/2000395344565-7.jpg" },
-    { id: 16, nombre: "smartwatch", precio: 199.99, categoria: "Wearables", stock: 10, imagen:"https://home.ripley.cl/store/Attachment/WOP/D126/2000379560356/2000379560356-1.jpg" },
-    { id: 17, nombre: "rastreador gps", precio: 79.99, categoria: "Wearables", stock: 15, imagen:"https://mercado.ripleylabs.com/wp-content/uploads/2023/04/gps-corta.jpg" },
-    { id: 18, nombre: "proyector", precio: 499.99, categoria: "Audiovisual", stock: 3, imagen:"https://home.ripley.cl/store/Attachment/WOP/D171/2000388753138/2000388753138_2.jpg" },
-    { id: 19, nombre: "pantalla de proyección", precio: 99.99, categoria: "Audiovisual", stock: 5, imagen:"https://cdn.shopify.com/s/files/1/0949/6208/products/pantallas-de-proyeccion-frontal2_grande.jpg?v=1446835271" },
-    { id: 20, nombre: "cargador portátil", precio: 29.99, categoria: "Accesorios", stock: 10, imagen:"https://catalogo.movistar.cl/pub/media/wysiwyg/caracteristica_equipo/gyrux_pbwhite_2.jpg" }
-  ]
+let productos = []
 
 //Arreglo para almacenar productos de carrito
 let carrito = []
+
+//Función asíncrona para obtener los productos del JSON
+async function obtenerProductos() {
+  try {
+    let respuesta = await fetch("./bd.json")
+    let productosJSON = await respuesta.json()
+    return productosJSON.productos
+  } catch (error) {
+    console.error('Error al obtener los productos: ', error)
+    throw error
+  }
+}
+
+//Llamada a función asíncrona para obtener los productos del JSON	
+obtenerProductos()
+  .then((productosJSON) => {
+    productos = productosJSON
+    obtenerLocalStorage()
+    mostrarProductos(productos)
+  }) //Luego de obtener la respuesta, se llama a la función mostrarProductos
+  .catch((error) => {
+    console.error('Error al obtener los productos: ', error)
+  })
 
 //Función para renderizar todos los productos
 function mostrarProductos(arrayProductos) {
@@ -134,6 +137,14 @@ function agregarAlCarrito(id){
   if (carritoIndex !== (-1)) {
       carrito[carritoIndex].cantidad += 1
       carrito[carritoIndex].precio = productos[pos].precio * carrito[carritoIndex].cantidad
+   
+      Swal.fire({
+        position: 'center',
+        icon: 'success',
+        title: `Agregaste otro(a) "${producto.nombre}" al carrito`,
+        showConfirmButton: false,
+        timer: 1500
+      })
   } 
   else {
           let productoCarrito = {
@@ -144,7 +155,14 @@ function agregarAlCarrito(id){
           cantidad: 1
       }
 
-      carrito.push(productoCarrito);
+      carrito.push(productoCarrito)
+      Swal.fire({
+        position: 'center',
+        icon: 'success',
+        title: `Agregaste "${producto.nombre}" al carrito`,
+        showConfirmButton: false,
+        timer: 1500
+      })
   }
 
   localStorage.setItem("carrito", JSON.stringify(carrito))
@@ -156,17 +174,11 @@ function agregarAlCarrito(id){
 function obtenerLocalStorage(){
   let carritoStorage = JSON.parse(localStorage.getItem("carrito"))
   let productosStorage = JSON.parse(localStorage.getItem("productos"))
-  if (carritoStorage) {
-    carrito = carritoStorage
-  }
-  if (productosStorage) {
-    productos = productosStorage
-  }
+ 
+  carrito = carritoStorage ? carritoStorage : []
+  
+  productos = productosStorage ? productosStorage : productos
 }
-
-//Llamadas a funciones
-obtenerLocalStorage()
-mostrarProductos(productos)
 
 //Variable para capturar evento click del botón para buscar un producto por nombre
 let buscador = document.getElementById("buscador")
